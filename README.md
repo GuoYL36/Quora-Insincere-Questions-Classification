@@ -12,3 +12,6 @@ Description:
       
 Evaluation:
       Submissions are evaluated on F1 Score between the predicted and the observed targets.
+
+
+My Result: 0.67955
