@@ -258,12 +258,12 @@ def attention(inputs, attention_size, time_major=False, return_alphas=False):
     u_omega = tf.Variable(tf.random_normal([attention_size], stddev=0.1))
 
     with tf.name_scope('v'):
-        v = tf.tanh(tf.tensordot(inputs, w_omega, axes=1) + b_omega)
+        v = tf.tanh(tf.tensordot(inputs, w_omega, axes=1) + b_omega)  # [Batch, Time, hidden_size] .* [hidden_size, attention_size] --> [Batch, Time, attention_size]
 
-    vu = tf.tensordot(v, u_omega, axes=1, name='vu')  # (Batch, Time)
-    alphas = tf.nn.softmax(vu, name='alphas')  # (Batch, Time)
+    vu = tf.tensordot(v, u_omega, axes=1, name='vu')  # [Batch, Time, attention_size] .* [attention_size] --> [Batch, Time]
+    alphas = tf.nn.softmax(vu, name='alphas')  # [Batch, Time]
 
-    output = tf.reduce_sum(inputs * tf.expand_dims(alphas, -1), 1)  # (Batch, Dimension)
+    output = tf.reduce_sum(inputs * tf.expand_dims(alphas, -1), 1)  # [Batch, Time, hidden_size] * [Batch, Time, 1] --> [Batch, 1, hidden_size] --> [Batch, hidden_size]
     if not return_alphas:
         return output
     else:
